@@ -8,22 +8,28 @@ function App() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  // const fetchData = async (vehicle) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:8080/api/v1/Cars/${vehicle}`
-  //     );
-  //     const jsonData = await response.json();
-  //     setData(jsonData);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
   const fetchData = (vehicle) => {
     fetch(`http://localhost:8080/api/v1/Cars/${vehicle}`)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Server Error or Vehicle not present in Database!");
+          throw new Error("Vehicle not present in Database!");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+        setError(null);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setData(null);
+      });
+  };
+  const fetchInterval = (vehicle, interval) => {
+    fetch(`http://localhost:8080/api/v1/Cars/${vehicle}/${interval}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Vehicle not present in Database!");
         }
         return response.json();
       })
@@ -58,8 +64,8 @@ function App() {
       />
       <button
         onClick={() => {
-          setConstantNumber(numberValue);
-          fetchData(textValue);
+          //setConstantNumber(numberValue);
+          fetchInterval(textValue, numberValue);
         }}
         disabled={isNaN(numberValue) || isAnyFieldEmpty()}
         className={
@@ -71,17 +77,34 @@ function App() {
         Submit
       </button>
 
-      {data ? (
+      {/* {data ? (
         data.serviceInterval >= constantNumber ? (
           <h1 style={{ color: "green" }}>
-            {data.serviceInterval - constantNumber} days remaining till next
-            Servicing
+            {(data.serviceInterval - constantNumber).toFixed(2)} Km's remaining
+            till next Servicing
           </h1>
         ) : (
           <h1 style={{ color: "orange" }}>
-            {constantNumber - data.serviceInterval} Km's due for servicing
+            {(constantNumber - data.serviceInterval).toFixed(2)} Km's due for
+            servicing
           </h1>
         )
+      ) : (
+        <h1 style={{ color: "red" }}>{error}</h1>
+      )} */}
+      {console.log(data)}
+      {data ? (
+        data >= 0 ? (
+          <h1 style={{ color: "green" }}>
+            {data.toFixed(2)} Km's remaining till next Servicing
+          </h1>
+        ) : (
+          <h1 style={{ color: "orange" }}>
+            {-data.toFixed(2)} Km's due for servicing
+          </h1>
+        )
+      ) : data === 0 ? (
+        <h1 style={{ color: "green" }}>0 Km's remaining till next Servicing</h1>
       ) : (
         <h1 style={{ color: "red" }}>{error}</h1>
       )}
