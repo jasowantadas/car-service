@@ -4,29 +4,32 @@ import "./App.css";
 function App() {
   const [textValue, setTextValue] = useState("");
   const [numberValue, setNumberValue] = useState("");
-  const [constantNumber, setConstantNumber] = useState("");
+  //const [constantNumber, setConstantNumber] = useState("");
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  //const [postData, setPostData] = useState({ name: "", serviceInterval: "" });
 
-  const fetchData = (vehicle) => {
-    fetch(`http://localhost:8080/api/v1/Cars/${vehicle}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Vehicle not present in Database!");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-        setError(null);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setData(null);
-      });
-  };
+  // const fetchData = (vehicle) => {
+  // //   fetch(`http://localhost:8080/api/v1/Cars/${vehicle}`)
+  // //     .then((response) => {
+  // //       if (!response.ok) {
+  // //         throw new Error("Vehicle not present in Database!");
+  // //       }
+  // //       return response.json();
+  // //     })
+  // //     .then((data) => {
+  // //       setData(data);
+  // //       setError(null);
+  // //     })
+  // //     .catch((error) => {
+  // //       setError(error.message);
+  // //       setData(null);
+  // //     });
+  // // };
   const fetchInterval = (vehicle, interval) => {
-    fetch(`http://localhost:8080/api/v1/Cars/${vehicle}/${interval}`)
+    fetch(
+      `https://car-services.azurewebsites.net/api/v1/Cars/${vehicle}/${interval}`
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Vehicle not present in Database!");
@@ -42,7 +45,65 @@ function App() {
         setData(null);
       });
   };
+  const postCar = (d) => {
+    fetch(`https://car-services.azurewebsites.net/api/v1/Cars`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(d),
+      credentials: "omit",
+    })
+      .then((response) => {
+        console.log("Response:", response);
+        if (!response.ok) {
+          throw new Error(`Failed to add car. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((dataa) => {
+        alert("Car Added to Database");
+        console.log("Success", dataa);
+      })
+      .catch((error) => {
+        alert(`Error adding car: ${error.message}`);
+        console.error("Error", error);
+      });
 
+    // .then((response) => {
+    //   return response.json();
+    // })
+    // .then((dataa) => {
+    //   // if (!dataa.success) {
+    //   //   throw new Error("No Add new Car!");
+    //   // }
+    //   alert("Car Added ot Database");
+    //   console.log("Sucess");
+    // })
+    // .catch((er) => {
+    //   alert("Couldnt add Car!");
+    //   console.log("Not Sucess");
+    // });
+  };
+  const delCar = (d) => {
+    fetch(`https://car-services.azurewebsites.net/api/v1/Cars?name=${d}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        console.log("Response:", response);
+        if (!response.ok) {
+          throw new Error(`Failed to delete car. Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((dataa) => {
+        alert("Car Deleted!");
+        console.log("Success", dataa);
+      })
+      .catch((error) => {
+        alert(`Error deleting car: ${error.message}`);
+        console.error("Error", error);
+      });
+  };
   const isAnyFieldEmpty = () => {
     return textValue === "" || numberValue === "";
   };
@@ -75,6 +136,34 @@ function App() {
         }
       >
         Submit
+      </button>
+      <button
+        onClick={() => {
+          //setConstantNumber(numberValue);
+          postCar({ name: textValue, serviceInterval: numberValue });
+        }}
+        disabled={isNaN(numberValue) || isAnyFieldEmpty()}
+        className={
+          isNaN(numberValue) || isAnyFieldEmpty()
+            ? "disabled-button primary-button"
+            : "primary-button2"
+        }
+      >
+        Add new Car
+      </button>
+      <button
+        onClick={() => {
+          //setConstantNumber(numberValue);
+          delCar(textValue);
+        }}
+        disabled={textValue === ""}
+        className={
+          textValue === ""
+            ? "disabled-button primary-button"
+            : "secondary-button"
+        }
+      >
+        Delete a car
       </button>
 
       {/* {data ? (
