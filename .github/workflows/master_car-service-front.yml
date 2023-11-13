@@ -61,4 +61,4 @@ jobs:
           app-name: 'car-service-front'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F249B1AD59B2480BA3EE9B52CB312132 }}
-          package: .
+          package:  release.zip
