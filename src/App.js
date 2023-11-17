@@ -28,7 +28,11 @@ function App() {
   // // };
   const fetchInterval = (vehicle, interval) => {
     fetch(
-      `https://car-services.azurewebsites.net/api/v1/Cars/${vehicle}/${interval}`
+      `https://car-services.azurewebsites.net/api/v1/Cars/${vehicle}/${interval}`,
+      {
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+      }
     )
       .then((response) => {
         if (!response.ok) {
@@ -47,6 +51,7 @@ function App() {
   };
   const postCar = (d) => {
     fetch(`https://car-services.azurewebsites.net/api/v1/Cars`, {
+      mode: "no-cors",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(d),
@@ -85,6 +90,7 @@ function App() {
   };
   const delCar = (d) => {
     fetch(`https://car-services.azurewebsites.net/api/v1/Cars?name=${d}`, {
+      mode: "no-cors",
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     })
