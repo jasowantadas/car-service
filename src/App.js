@@ -26,9 +26,10 @@ function App() {
   // //       setData(null);
   // //     });
   // // };
+  //OlD https://car-services.azurewebsites.net
   const fetchInterval = (vehicle, interval) => {
     fetch(
-      `https://car-services.azurewebsites.net/api/v1/Cars/${vehicle}/${interval}`
+      `https://car-service-backend.azurewebsites.net/api/v1/Cars/${vehicle}/${interval}`
     )
       .then((response) => {
         if (!response.ok) {
@@ -46,7 +47,7 @@ function App() {
       });
   };
   const postCar = (d) => {
-    fetch(`https://car-services.azurewebsites.net/api/v1/Cars`, {
+    fetch(`https://car-service-backend.azurewebsites.net/api/v1/Cars`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(d),
@@ -67,27 +68,15 @@ function App() {
         alert(`Error adding car: ${error.message}`);
         console.error("Error", error);
       });
-
-    // .then((response) => {
-    //   return response.json();
-    // })
-    // .then((dataa) => {
-    //   // if (!dataa.success) {
-    //   //   throw new Error("No Add new Car!");
-    //   // }
-    //   alert("Car Added ot Database");
-    //   console.log("Sucess");
-    // })
-    // .catch((er) => {
-    //   alert("Couldnt add Car!");
-    //   console.log("Not Sucess");
-    // });
   };
   const delCar = (d) => {
-    fetch(`https://car-services.azurewebsites.net/api/v1/Cars?name=${d}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    })
+    fetch(
+      `https://car-service-backend.azurewebsites.net/api/v1/Cars?name=${d}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      }
+    )
       .then((response) => {
         console.log("Response:", response);
         if (!response.ok) {
